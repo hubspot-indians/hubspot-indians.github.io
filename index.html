@@ -7,26 +7,287 @@
   <style>
     *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;}
     body{background:#f9f9f9;color:#222;}
-    header{display:flex;justify-content:space-between;padding:1rem;background:#cc0000;color:#fff;}
-    header input{padding:0.5rem;width:40%;border:none;border-radius:4px;}
-    .logo{font-size:1.5rem;font-weight:bold;}
-    .main{display:flex;flex-direction:column;align-items:center;}
-    .video-grid{width:100%;padding:1rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1rem;}
-    .video-card{background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.1);transition:transform 0.2s;text-decoration:none;color:inherit;}
-    .video-card:hover{transform:scale(1.02);}
-    .video-thumb{width:100%;height:150px;object-fit:cover;}
-    .video-info{padding:0.5rem;}
-    .pagination{display:flex;justify-content:center;margin:1rem 0;gap:1rem;}
-    .pagination button{padding:0.5rem 1rem;border:none;border-radius:5px;background:#cc0000;color:white;cursor:pointer;font-weight:bold;}
-    .pagination button:disabled{background:#999;cursor:not-allowed;}
+    
+    /* Navigation Bar Styles */
+    nav {
+      background-color: #cc0000;
+      padding: 0;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+    
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: white;
+      padding: 1rem 0;
+    }
+    
+    .nav-menu {
+      display: flex;
+      list-style: none;
+    }
+    
+    .nav-item {
+      position: relative;
+      margin: 0 0.5rem;
+    }
+    
+    .nav-link {
+      display: block;
+      color: white;
+      text-decoration: none;
+      padding: 1rem;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+    
+    .nav-link:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background-color: #cc0000;
+      min-width: 200px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+      z-index: 1;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(10px);
+      transition: all 0.3s ease;
+    }
+    
+    .nav-item:hover .dropdown {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+    
+    .dropdown-link {
+      display: block;
+      color: white;
+      padding: 0.75rem 1rem;
+      text-decoration: none;
+      transition: background-color 0.3s;
+    }
+    
+    .dropdown-link:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .nav-toggle {
+      display: none;
+      flex-direction: column;
+      cursor: pointer;
+    }
+    
+    .bar {
+      width: 25px;
+      height: 3px;
+      background-color: white;
+      margin: 3px 0;
+      transition: 0.3s;
+    }
+    
+    /* Header Styles */
+    header {
+      display: flex;
+      justify-content: space-between;
+      padding: 1rem;
+      background: #fff;
+      border-bottom: 1px solid #eee;
+    }
+    
+    header input {
+      padding: 0.5rem;
+      width: 40%;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    
+    /* Main Content */
+    .main {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    
+    .video-grid {
+      width: 100%;
+      padding: 1rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+    }
+    
+    .video-card {
+      background: #fff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: transform 0.2s;
+      text-decoration: none;
+      color: inherit;
+    }
+    
+    .video-card:hover {
+      transform: scale(1.02);
+    }
+    
+    .video-thumb {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+    }
+    
+    .video-info {
+      padding: 0.5rem;
+    }
+    
+    .video-category {
+      font-size: 0.8rem;
+      color: #cc0000;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+    
+    .pagination {
+      display: flex;
+      justify-content: center;
+      margin: 1rem 0;
+      gap: 1rem;
+    }
+    
+    .pagination button {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 5px;
+      background: #cc0000;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    
+    .pagination button:disabled {
+      background: #999;
+      cursor: not-allowed;
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .nav-menu {
+        position: fixed;
+        left: -100%;
+        top: 70px;
+        flex-direction: column;
+        background-color: #cc0000;
+        width: 100%;
+        text-align: center;
+        transition: 0.3s;
+        box-shadow: 0 10px 27px rgba(0,0,0,0.05);
+        z-index: 100;
+      }
+      
+      .nav-menu.active {
+        left: 0;
+      }
+      
+      .nav-item {
+        margin: 0;
+      }
+      
+      .nav-link {
+        padding: 1rem;
+        display: block;
+      }
+      
+      .dropdown {
+        position: static;
+        display: none;
+        box-shadow: none;
+        background-color: rgba(0, 0, 0, 0.2);
+      }
+      
+      .nav-item.active .dropdown {
+        display: block;
+      }
+      
+      .nav-toggle {
+        display: flex;
+      }
+      
+      .nav-toggle.active .bar:nth-child(2) {
+        opacity: 0;
+      }
+      
+      .nav-toggle.active .bar:nth-child(1) {
+        transform: translateY(8px) rotate(45deg);
+      }
+      
+      .nav-toggle.active .bar:nth-child(3) {
+        transform: translateY(-8px) rotate(-45deg);
+      }
+      
+      header {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      header input {
+        width: 100%;
+        margin-top: 1rem;
+      }
+    }
   </style>
 </head>
 <body>
+  <!-- Navigation Bar -->
+  <nav>
+    <div class="nav-container">
+      <div class="logo">▶ Hubspot Indians</div>
+      <ul class="nav-menu" id="navMenu">
+        <li class="nav-item"><a href="#" class="nav-link">Home</a></li>
+        <li class="nav-item"><a href="#" class="nav-link">Popular</a></li>
+        <li class="nav-item"><a href="#" class="nav-link">New Release</a></li>
+        <li class="nav-item" id="categoryItem">
+          <a href="#" class="nav-link">Category</a>
+          <div class="dropdown">
+            <a href="#" class="dropdown-link" data-category="all">All Videos</a>
+            <a href="#" class="dropdown-link" data-category="russian">Russian Girls</a>
+            <a href="#" class="dropdown-link" data-category="anal">Anal</a>
+            <a href="#" class="dropdown-link" data-category="orgy">Orgy</a>
+            <a href="#" class="dropdown-link" data-category="teen">Teen</a>
+          </div>
+        </li>
+      </ul>
+      <div class="nav-toggle">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Search Header -->
   <header>
-    <div class="logo">▶ Hubspot Indians</div>
-    <input type="text" placeholder="Search..." id="searchBox" />
+    <input type="text" placeholder="Search videos..." id="searchBox" />
   </header>
 
+  <!-- Main Content -->
   <div class="main">
     <section class="video-grid" id="videoGrid"></section>
     <div class="pagination">
@@ -37,29 +298,92 @@
 
   <script>
     const videos = [
-      { title: "It is impossible to resist the big ass of Russian beauty", thumb: "https://en.pornohd.blue/thumbs/28616/thumb1.1.webp?", url: "https://v3.cdnde.com/x3/upload_9d26866401d25fd1e7f3452aab0c1307/44432/JOPORN_NET_44432_360p.mp4" },
-    { title: "The girl had long dreamed of having anal sex", thumb: "https://en.pornohd.blue/thumbs/28714/thumb1.1.webp?", url: "https://v5.cdnde.com/x5/upload_c5e2067acd5b89dd22bb94f31a3ead3d/44374/JOPORN_NET_44374_480p.mp4" },
-    { title: "Passionate Russian girl is delighted with a big member", thumb: "https://m.joporn.name/thumbs/44327/thumb1.jpg", url: "https://v1.cdnde.com/x1/upload_f27c9ee13342ef5f73e5aa5dbe96b9a6/44327/JOPORN_NET_44327_240p.mp4" },
-    { title: "Chicks fuck in pussy and anal during a hot orgy", thumb: "https://m.joporn.name/thumbs/30768/thumb1.jpg", url: "https://v1.cdnde.com/x1/upload_f27c9ee13342ef5f73e5aa5dbe96b9a6/30768/JOPORN_NET_30768_240p.mp4" },
-    { title: "Young girl squeals with pleasure receiving a big cock", thumb: "https://m.joporn.name/thumbs/44379/thumb1.jpg", url: "https://v3.cdnde.com/x3/upload_9d26866401d25fd1e7f3452aab0c1307/44379/JOPORN_NET_44379_360p.mp4" },
-    { title: "Russian girl in white panties actively fucks a rich man", thumb: "https://m.joporn.name/thumbs/38869/thumb1.jpg", url: "https://v4.cdnde.com/x4/upload_ef6187cc9334016d69abc6d6100f48ad/38869/JOPORN_NET_38869_240p.mp4" },
-    { title: "Russian slut in a short skirt is ready for hot fucking", thumb: "https://m.joporn.name/thumbs/35939/thumb1.jpg", url: "https://v1.cdnde.com/x1/upload_f27c9ee13342ef5f73e5aa5dbe96b9a6/35939/JOPORN_NET_35939_240p.mp4" },
-    { title: "Russian girl sucks and fucks with a guy on a billiard table", thumb: "https://m.joporn.name/thumbs/30613/thumb1.jpg", url: "https://v8.cdnde.com/x8/upload_df33807635ed36aff7d1a3eb64d595ff/30613/JOPORN_NET_30613_360p.mp4" },
-    { title: "Slender Russian girl erotically fucks in a cancer pose", thumb: "https://m.joporn.name/thumbs/42364/thumb1.jpg", url: "https://v8.cdnde.com/x8/upload_df33807635ed36aff7d1a3eb64d595ff/42364/JOPORN_NET_42364_360p.mp4" },
-    { title: "Russian chick with beautiful tits rode a dick", thumb: "https://m.joporn.name/thumbs/38260/thumb1.jpg", url: "https://v4.cdnde.com/x4/upload_ef6187cc9334016d69abc6d6100f48ad/38260/JOPORN_NET_38260_240p.mp4" },
-    { title: "Russian cutie deftly wet pussy saddled the barrel", thumb: "https://m.joporn.name/thumbs/44390/thumb1.jpg", url: "https://v5.cdnde.com/x5/upload_c5e2067acd5b89dd22bb94f31a3ead3d/44390/JOPORN_NET_44390_480p.mp4" },
-    { title: "Post 1", thumb: "https://en.pornohd.blue/thumbs/26951/thumb6.jpg", url: "https://v3.cdnde.com/x3/upload_9d26866401d25fd1e7f3452aab0c1307/42712/JOPORN_NET_42712_360p.mp4" }
-  
+      { 
+        title: "It is impossible to resist the big ass of Russian beauty", 
+        thumb: "https://en.pornohd.blue/thumbs/28616/thumb1.1.webp?", 
+        url: "https://v3.cdnde.com/x3/upload_9d26866401d25fd1e7f3452aab0c1307/44432/JOPORN_NET_44432_360p.mp4",
+        category: "russian"
+      },
+      { 
+        title: "The girl had long dreamed of having anal sex", 
+        thumb: "https://en.pornohd.blue/thumbs/28714/thumb1.1.webp?", 
+        url: "https://v5.cdnde.com/x5/upload_c5e2067acd5b89dd22bb94f31a3ead3d/44374/JOPORN_NET_44374_480p.mp4",
+        category: "anal"
+      },
+      { 
+        title: "Passionate Russian girl is delighted with a big member", 
+        thumb: "https://m.joporn.name/thumbs/44327/thumb1.jpg", 
+        url: "https://v1.cdnde.com/x1/upload_f27c9ee13342ef5f73e5aa5dbe96b9a6/44327/JOPORN_NET_44327_240p.mp4",
+        category: "russian"
+      },
+      { 
+        title: "Chicks fuck in pussy and anal during a hot orgy", 
+        thumb: "https://m.joporn.name/thumbs/30768/thumb1.jpg", 
+        url: "https://v1.cdnde.com/x1/upload_f27c9ee13342ef5f73e5aa5dbe96b9a6/30768/JOPORN_NET_30768_240p.mp4",
+        category: "orgy"
+      },
+      { 
+        title: "Young girl squeals with pleasure receiving a big cock", 
+        thumb: "https://m.joporn.name/thumbs/44379/thumb1.jpg", 
+        url: "https://v3.cdnde.com/x3/upload_9d26866401d25fd1e7f3452aab0c1307/44379/JOPORN_NET_44379_360p.mp4",
+        category: "teen"
+      },
+      { 
+        title: "Russian girl in white panties actively fucks a rich man", 
+        thumb: "https://m.joporn.name/thumbs/38869/thumb1.jpg", 
+        url: "https://v4.cdnde.com/x4/upload_ef6187cc9334016d69abc6d6100f48ad/38869/JOPORN_NET_38869_240p.mp4",
+        category: "russian"
+      },
+      { 
+        title: "Russian slut in a short skirt is ready for hot fucking", 
+        thumb: "https://m.joporn.name/thumbs/35939/thumb1.jpg", 
+        url: "https://v1.cdnde.com/x1/upload_f27c9ee13342ef5f73e5aa5dbe96b9a6/35939/JOPORN_NET_35939_240p.mp4",
+        category: "russian"
+      },
+      { 
+        title: "Russian girl sucks and fucks with a guy on a billiard table", 
+        thumb: "https://m.joporn.name/thumbs/30613/thumb1.jpg", 
+        url: "https://v8.cdnde.com/x8/upload_df33807635ed36aff7d1a3eb64d595ff/30613/JOPORN_NET_30613_360p.mp4",
+        category: "russian"
+      },
+      { 
+        title: "Slender Russian girl erotically fucks in a cancer pose", 
+        thumb: "https://m.joporn.name/thumbs/42364/thumb1.jpg", 
+        url: "https://v8.cdnde.com/x8/upload_df33807635ed36aff7d1a3eb64d595ff/42364/JOPORN_NET_42364_360p.mp4",
+        category: "russian"
+      },
+      { 
+        title: "Russian chick with beautiful tits rode a dick", 
+        thumb: "https://m.joporn.name/thumbs/38260/thumb1.jpg", 
+        url: "https://v4.cdnde.com/x4/upload_ef6187cc9334016d69abc6d6100f48ad/38260/JOPORN_NET_38260_240p.mp4",
+        category: "russian"
+      },
+      { 
+        title: "Russian cutie deftly wet pussy saddled the barrel", 
+        thumb: "https://m.joporn.name/thumbs/44390/thumb1.jpg", 
+        url: "https://v5.cdnde.com/x5/upload_c5e2067acd5b89dd22bb94f31a3ead3d/44390/JOPORN_NET_44390_480p.mp4",
+        category: "russian"
+      },
+      { 
+        title: "Post 1", 
+        thumb: "https://en.pornohd.blue/thumbs/26951/thumb6.jpg", 
+        url: "https://v3.cdnde.com/x3/upload_9d26866401d25fd1e7f3452aab0c1307/42712/JOPORN_NET_42712_360p.mp4",
+        category: "anal"
+      }
     ];
 
     const videosPerPage = 6;
     let currentPage = 1;
     let filteredVideos = [...videos];
+    let currentCategory = "all";
 
     const videoGrid = document.getElementById("videoGrid");
     const searchBox = document.getElementById("searchBox");
     const prevBtn = document.getElementById("prevBtn");
     const nextBtn = document.getElementById("nextBtn");
+    const navMenu = document.getElementById("navMenu");
+    const navToggle = document.querySelector(".nav-toggle");
+    const categoryItem = document.getElementById("categoryItem");
 
     function renderVideos() {
       videoGrid.innerHTML = "";
@@ -78,6 +402,7 @@
         card.innerHTML = `
           <img src="${video.thumb}" class="video-thumb" />
           <div class="video-info">
+            <div class="video-category">${getCategoryName(video.category)}</div>
             <h4>${video.title}</h4>
           </div>
         `;
@@ -87,10 +412,33 @@
       updateButtons();
     }
 
+    function getCategoryName(category) {
+      const names = {
+        "russian": "Russian",
+        "anal": "Anal",
+        "orgy": "Orgy",
+        "teen": "Teen"
+      };
+      return names[category] || category;
+    }
+
     function updateButtons() {
       const totalPages = Math.ceil(filteredVideos.length / videosPerPage);
       prevBtn.disabled = currentPage === 1;
       nextBtn.disabled = currentPage === totalPages || totalPages === 0;
+    }
+
+    function filterVideos() {
+      const keyword = searchBox.value.trim().toLowerCase();
+      
+      filteredVideos = videos.filter(video => {
+        const matchesSearch = video.title.toLowerCase().includes(keyword);
+        const matchesCategory = currentCategory === "all" || video.category === currentCategory;
+        return matchesSearch && matchesCategory;
+      });
+      
+      currentPage = 1;
+      renderVideos();
     }
 
     prevBtn.onclick = () => {
@@ -108,27 +456,34 @@
       }
     };
 
-    searchBox.addEventListener("input", () => {
-      const keyword = searchBox.value.trim().toLowerCase();
-      filteredVideos = videos.filter(video =>
-        video.title.toLowerCase().includes(keyword)
-      );
-      currentPage = 1;
-      renderVideos();
+    searchBox.addEventListener("input", filterVideos);
+
+    // Category filtering from dropdown
+    categoryItem.addEventListener("click", (e) => {
+      if (e.target.classList.contains("dropdown-link")) {
+        e.preventDefault();
+        
+        // Set current category and filter
+        currentCategory = e.target.dataset.category;
+        filterVideos();
+      }
+    });
+
+    // Mobile menu toggle
+    navToggle.addEventListener("click", () => {
+      navToggle.classList.toggle("active");
+      navMenu.classList.toggle("active");
+    });
+
+    // Mobile category dropdown toggle
+    categoryItem.addEventListener("click", (e) => {
+      if (window.innerWidth <= 768 && e.target.classList.contains("nav-link")) {
+        e.preventDefault();
+        categoryItem.classList.toggle("active");
+      }
     });
 
     renderVideos();
   </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
