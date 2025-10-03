@@ -497,7 +497,76 @@
 
     renderVideos();
   </script>
+    <script>
+  // ... existing code ...
+
+  // Store current state before navigating
+  function storeCurrentState() {
+    sessionStorage.setItem('videoGridState', JSON.stringify({
+      currentPage: currentPage,
+      currentCategory: currentCategory,
+      searchTerm: searchBox.value,
+      videos: videos
+    }));
+  }
+
+  // Restore state if available
+  function restoreState() {
+    const savedState = sessionStorage.getItem('videoGridState');
+    if (savedState) {
+      const state = JSON.parse(savedState);
+      currentPage = state.currentPage;
+      currentCategory = state.currentCategory;
+      searchBox.value = state.searchTerm;
+      filteredVideos = [...videos];
+      filterVideos(); // This will apply search and category filters
+    }
+  }
+
+  // Modified renderVideos function
+  function renderVideos() {
+    videoGrid.innerHTML = "";
+    const start = (currentPage - 1) * videosPerPage;
+    const paginatedVideos = filteredVideos.slice(start, start + videosPerPage);
+
+    if (paginatedVideos.length === 0) {
+      videoGrid.innerHTML = "<p>No videos found.</p>";
+      return;
+    }
+
+    paginatedVideos.forEach(video => {
+      const card = document.createElement("a");
+      card.href = `video.html?title=${encodeURIComponent(video.title)}&url=${encodeURIComponent(video.url)}`;
+      card.className = "video-card";
+      
+      // Add click handler to store state
+      card.addEventListener('click', (e) => {
+        storeCurrentState();
+      });
+      
+      card.innerHTML = `
+        <img src="${video.thumb}" class="video-thumb" />
+        <div class="video-info">
+          <div class="video-category">${getCategoryName(video.category)}</div>
+          <h4>${video.title}</h4>
+        </div>
+      `;
+      videoGrid.appendChild(card);
+    });
+
+    updateButtons();
+  }
+
+  // Restore state on page load
+  window.addEventListener('DOMContentLoaded', () => {
+    restoreState();
+    renderVideos();
+  });
+
+  // ... rest of existing code ...
+</script>
 </body>
 </html>
+
 
 
