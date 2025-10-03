@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+    
+    <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -441,6 +442,12 @@
       renderVideos();
     }
 
+    function closeMenu() {
+      navMenu.classList.remove("active");
+      navToggle.classList.remove("active");
+      categoryItem.classList.remove("active");
+    }
+
     prevBtn.onclick = () => {
       if (currentPage > 1) {
         currentPage--;
@@ -466,6 +473,11 @@
         // Set current category and filter
         currentCategory = e.target.dataset.category;
         filterVideos();
+        
+        // Close menu on mobile
+        if (window.innerWidth <= 768) {
+          closeMenu();
+        }
       }
     });
 
@@ -487,3 +499,4 @@
   </script>
 </body>
 </html>
+
