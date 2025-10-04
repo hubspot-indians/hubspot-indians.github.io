@@ -1,11 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">                              <head>  <meta charset="UTF-8" />
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Watch Video – Hubspot Indians</title>
-  <style>                                         *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;}                   body{background:#f9f9f9;color:#222;}          header{display:flex;justify-content:space-between;align-items:center;padding:1rem;background:#cc0000;color:#fff;}
+
+  <!-- Video.js CSS -->
+  <link href="https://vjs.zencdn.net/7.21.1/video-js.css" rel="stylesheet" />
+
+  <!-- Ads + IMA plugin -->
+  <script src="https://vjs.zencdn.net/7.21.1/video.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/videojs-contrib-ads/6.9.0/videojs-contrib-ads.min.js"></script>
+  <script src="https://imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/videojs-ima@1.9.0/dist/videojs.ima.min.js"></script>
+
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;}
+    body{background:#f9f9f9;color:#222;}
+    header{display:flex;justify-content:space-between;align-items:center;padding:1rem;background:#cc0000;color:#fff;}
     header a{color:#fff;text-decoration:none;font-weight:bold;}
-    .container{max-width:900px;margin:2rem auto;padding:1rem;}                                  h1{margin-bottom:1rem;font-size:1.5rem;}      video, iframe{width:100%;height:500px;border:none;border-radius:8px;}
+    .container{max-width:900px;margin:2rem auto;padding:1rem;}
+    h1{margin-bottom:1rem;font-size:1.5rem;}
     .back{display:inline-block;margin-top:1rem;padding:.5rem 1rem;background:#cc0000;color:#fff;border-radius:4px;text-decoration:none;}
+    .video-js{width:100%;height:500px;border-radius:8px;}
   </style>
 </head>
 <body>
@@ -16,7 +33,10 @@
 
   <div class="container">
     <h1 id="videoTitle">Loading...</h1>
-    <div id="player"></div>
+
+    <!-- Video.js Player -->
+    <video id="videoPlayer" class="video-js vjs-default-skin" controls preload="auto"></video>
+
     <a href="javascript:history.back()" class="back">⬅ Back to Videos</a>
   </div>
 
@@ -27,28 +47,23 @@
 
     document.getElementById('videoTitle').textContent = title;
 
-    const playerContainer = document.getElementById('player');
+    var player = videojs('videoPlayer');
 
-    // Check if URL is a direct video file
-    const isVideoFile = /\.(mp4|webm|ogg|m3u8)(\?.*)?$/i.test(url);
-
-    if (isVideoFile) {
-      // native HTML5 video player
-      playerContainer.innerHTML = `
-        <video controls autoplay>
-          <source src="${url}" type="video/${url.split('.').pop()}">
-          Your browser does not support the video tag.
-        </video>
-      `;
-    } else {
-      // embed inside iframe
-      try {
-        const testUrl = new URL(url);
-        playerContainer.innerHTML = `<iframe src="${testUrl.href}" allowfullscreen></iframe>`;
-      } catch (e) {
-        playerContainer.innerHTML = '<p style="color:red;">Invalid or missing video URL.</p>';
-      }
+    // ✅ User ke video URL se main video load hoga
+    if (url) {
+      player.src({ src: url, type: "video/mp4" });
     }
+
+    // ✅ Yaha tumhara diya hua VAST link set kar diya
+    var adTagUrl = "https://wideeyedchampion.com/dFm.Fpz/deG/NbvRZxGYUz/uemmI9RusZCU/lek/PyTMYT2/NCjkc-3fNXjhYStyNpj_Yq2/NRzCcP2dNNwz";
+
+    var options = {
+      id: 'videoPlayer',
+      adTagUrl: adTagUrl
+    };
+
+    // Initialize ads
+    player.ima(options);
   </script>
 </body>
 </html>
