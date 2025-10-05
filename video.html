@@ -1,11 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">                              <head>  <meta charset="UTF-8" />
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Watch Video – Hubspot Indians</title>
-  <style>                                         *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;}                   body{background:#f9f9f9;color:#222;}          header{display:flex;justify-content:space-between;align-items:center;padding:1rem;background:#cc0000;color:#fff;}
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;}
+    body{background:#f9f9f9;color:#222;}
+    header{display:flex;justify-content:space-between;align-items:center;padding:1rem;background:#cc0000;color:#fff;}
     header a{color:#fff;text-decoration:none;font-weight:bold;}
-    .container{max-width:900px;margin:2rem auto;padding:1rem;}                                  h1{margin-bottom:1rem;font-size:1.5rem;}      video, iframe{width:100%;height:500px;border:none;border-radius:8px;}
+    .container{max-width:900px;margin:2rem auto;padding:1rem;}
+    h1{margin-bottom:1rem;font-size:1.5rem;}
+    video, iframe{width:100%;height:500px;border:none;border-radius:8px;}
     .back{display:inline-block;margin-top:1rem;padding:.5rem 1rem;background:#cc0000;color:#fff;border-radius:4px;text-decoration:none;}
+    #fluid-player-container {width:100%;height:500px;}
   </style>
 </head>
 <body>
@@ -33,15 +41,65 @@
     const isVideoFile = /\.(mp4|webm|ogg|m3u8)(\?.*)?$/i.test(url);
 
     if (isVideoFile) {
-      // native HTML5 video player
+      // Fluid Player for native video files
       playerContainer.innerHTML = `
-        <video controls autoplay>
-          <source src="${url}" type="video/${url.split('.').pop()}">
-          Your browser does not support the video tag.
-        </video>
+        <div id="fluid-player-container">
+          <video id="fluid-player" controls style="width:100%;height:100%;">
+            <source src="${url}" type="video/${url.split('.').pop()}">
+            Your browser does not support the video tag.
+          </video>
+        </div>
       `;
+      
+      // Load Fluid Player after DOM is ready
+      const script = document.createElement('script');
+      script.src = "https://cdn.fluidplayer.com/v3/current/fluidplayer.min.js";
+      script.onload = function() {
+        var myFP = fluidPlayer(
+          'fluid-player', {
+            "layoutControls": {
+              "controlBar": {
+                "autoHideTimeout": 3,
+                "animated": true,
+                "autoHide": true
+              },
+              "htmlOnPauseBlock": {
+                "html": null,
+                "height": null,
+                "width": null
+              },
+              "autoPlay": false,
+              "mute": true,
+              "allowTheatre": true,
+              "playPauseAnimation": false,
+              "playbackRateEnabled": false,
+              "allowDownload": false,
+              "playButtonShowing": false,
+              "fillToContainer": true,
+              "posterImage": ""
+            },
+            "vastOptions": {
+              "adList": [
+                {
+                  "roll": "preRoll",
+                  "vastTag": "https://wideeyedchampion.com/domRFsz.d/GzN/vxZ/GBUT/_ehm/9huiZwUJlGkhPwTqY-2kNWjacl3xNAjmY/tLNvjcYe2MN/zCc/2kNUy/Z/sqaIWY1CpfdoDD0LxG",
+                  "adText": ""
+                },
+                {
+                  "roll": "onPauseRoll",
+                  "vastTag": "https://wideeyedchampion.com/d/m/F.zFdxGzN/vtZQGuUj/geRmN9fujZYUel/kyPkT/Y/2aNtjLci3dNmjpYrtjNSjZYQ2RNkzTcz2SNFw_",
+                  "adText": ""
+                }
+              ],
+              "adCTAText": false,
+              "adCTATextPosition": ""
+            }
+          }
+        );
+      };
+      document.head.appendChild(script);
     } else {
-      // embed inside iframe
+      // embed inside iframe for external sources
       try {
         const testUrl = new URL(url);
         playerContainer.innerHTML = `<iframe src="${testUrl.href}" allowfullscreen></iframe>`;
