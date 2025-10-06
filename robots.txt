@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: /video.html
+Allow: /
+Sitemap:https://hubspot-indians.github.io/sitemap.xml
