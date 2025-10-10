@@ -4,6 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Watch Video – Hubspot Indians</title>
+
+  <!-- Video.js CSS -->
+  <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
+
   <style>
     *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;}
     body{background:#f9f9f9;color:#222;}
@@ -11,10 +15,14 @@
     header a{color:#fff;text-decoration:none;font-weight:bold;}
     .container{max-width:900px;margin:2rem auto;padding:1rem;}
     h1{margin-bottom:1rem;font-size:1.5rem;}
-    video, iframe{width:100%;height:500px;border:none;border-radius:8px;}
+    .video-js{width:100%;height:500px;border-radius:8px;}
     .back{display:inline-block;margin-top:1rem;padding:.5rem 1rem;background:#cc0000;color:#fff;border-radius:4px;text-decoration:none;}
-    #fluid-player-container {width:100%;height:500px;}
+    #status { display: none; }
   </style>
+
+  <!-- Video.js Ads Plugin -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/videojs-contrib-ads/6.9.0/videojs-contrib-ads.css" rel="stylesheet" />
+  <link href="https://imasdk.googleapis.com/js/sdkloader/ima3.js" rel="stylesheet" />
 </head>
 <body>
   <header>
@@ -24,88 +32,107 @@
 
   <div class="container">
     <h1 id="videoTitle">Loading...</h1>
-    <div id="player"></div>
+    <div id="status"></div>
+    <video id="videoPlayer" class="video-js vjs-big-play-centered" controls preload="auto" playsinline data-setup='{}'></video>
     <a href="javascript:history.back()" class="back">⬅ Back to Videos</a>
   </div>
 
+  <!-- Video.js JS -->
+  <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
+  <!-- Video.js Ads -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/videojs-contrib-ads/6.9.0/videojs-contrib-ads.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/videojs-ima@1.8.0/dist/videojs.ima.min.js"></script>
+
   <script>
+    // --- 1. CORS proxy list ---
+    const proxyList = [
+      "https://api.allorigins.win/get?url=",
+      "https://corsproxy.io/?",
+      "https://api.codetabs.com/v1/proxy?quest=",
+      "https://thingproxy.freeboard.io/fetch/"
+    ];
+
+    // --- 2. Initialize Video.js ---
+    const player = videojs("videoPlayer");
+
+    // --- 3. Get GET parameters ---
     const params = new URLSearchParams(window.location.search);
+    const videoUrl = params.get('url') || ''; // Video URL
     const title = params.get('title') || 'Untitled Video';
-    const url = params.get('url') || '';
+    // Use the fixed VAST URL directly
+    const vastUrl = "https://heavenly-holiday.com/d/mtFpz.dnGKNWvAZ-GkUi/uePm/9EuUZIUAlSk/PwTaYd2yNjjxcI3KNPjvY/t/NIjJY/2_Nuzict2zNUy/Z/shaTWX1dpMdMDl0CxF";
+    const statusEl = document.getElementById('status');
 
     document.getElementById('videoTitle').textContent = title;
 
-    const playerContainer = document.getElementById('player');
-
-    // Check if URL is a direct video file
-    const isVideoFile = /\.(mp4|webm|ogg|m3u8)(\?.*)?$/i.test(url);
-
-    if (isVideoFile) {
-      // Fluid Player for native video files
-      playerContainer.innerHTML = `
-        <div id="fluid-player-container">
-          <video id="fluid-player" controls style="width:100%;height:100%;">
-            <source src="${url}" type="video/${url.split('.').pop()}">
-            Your browser does not support the video tag.
-          </video>
-        </div>
-      `;
-      
-      // Load Fluid Player after DOM is ready
-      const script = document.createElement('script');
-      script.src = "https://cdn.fluidplayer.com/v3/current/fluidplayer.min.js";
-      script.onload = function() {
-        var myFP = fluidPlayer(
-          'fluid-player', {
-            "layoutControls": {
-              "controlBar": {
-                "autoHideTimeout": 3,
-                "animated": true,
-                "autoHide": true
-              },
-              "htmlOnPauseBlock": {
-                "html": null,
-                "height": null,
-                "width": null
-              },
-              "autoPlay": false,
-              "mute": true,
-              "allowTheatre": true,
-              "playPauseAnimation": false,
-              "playbackRateEnabled": false,
-              "allowDownload": false,
-              "playButtonShowing": false,
-              "fillToContainer": true,
-              "posterImage": ""
-            },
-            "vastOptions": {
-              "adList": [
-                {
-                  "roll": "preRoll",
-                  "vastTag": "https://wideeyedchampion.com/dQmAF.z-dVGTNkvwZ/GVUm/eeEmT9NurZ/UflxkSPxTyYB2oNMjAcE3iNHjcYNtwNejhY/2/NDz/c/2/N/yvZ/s/abWN1WpydYDJ0/xL",
-                  "adText": ""
-                },
-                {
-                  "roll": "onPauseRoll",
-                  "vastTag": "https://wideeyedchampion.com/dQmAF.z-dVGTNkvwZ/GVUm/eeEmT9NurZ/UflxkSPxTyYB2oNMjAcE3iNHjcYNtwNejhY/2/NDz/c/2/N/yvZ/s/abWN1WpydYDJ0/xL",
-                  "adText": ""
-                }
-              ],
-              "adCTAText": false,
-              "adCTATextPosition": ""
-            }
-          }
-        );
-      };
-      document.head.appendChild(script);
+    if (!videoUrl) {
+      console.warn('Missing video URL');
     } else {
-      // embed inside iframe for external sources
-      try {
-        const testUrl = new URL(url);
-        playerContainer.innerHTML = `<iframe src="${testUrl.href}" allowfullscreen></iframe>`;
-      } catch (e) {
-        playerContainer.innerHTML = '<p style="color:red;">Invalid or missing video URL.</p>';
+      playVideo(videoUrl);
+    }
+
+    // --- 4. Fetch HTML via proxies ---
+    async function fetchWithProxies(targetUrl) {
+      for (const proxy of proxyList) {
+        try {
+          const response = await fetch(proxy + encodeURIComponent(targetUrl));
+          if (!response.ok) throw new Error("Proxy failed: " + proxy);
+          const text = await response.text();
+          if (text.includes("<html")) return text;
+          const json = JSON.parse(text);
+          if (json.contents) return json.contents;
+        } catch(e) {
+          console.warn("Proxy failed:", proxy);
+        }
       }
+      throw new Error("All proxies failed");
+    }
+
+    // --- 5. Play video ---
+    async function playVideo(url) {
+      const isVideoFile = /\.(mp4|webm|ogg|m3u8)(\?.*)?$/i.test(url);
+      let videoSrc = url;
+
+      if (!isVideoFile) {
+        try {
+          const html = await fetchWithProxies(url);
+
+          // Extract .mp4 links
+          const mp4Matches = [...html.matchAll(/https?:\/\/[^\s"']+\.mp4[^\s"']*/g)]
+            .map(m => m[0])
+            .filter(l => l.includes("cdn") || l.includes("xhamster"));
+
+          if (mp4Matches.length === 0) {
+            console.warn("No playable video found.");
+            return;
+          }
+
+          videoSrc = mp4Matches[0];
+
+          // Extract poster/thumbnail
+          const posterMatch = html.match(/<meta property="og:image" content="([^"]+)"/);
+          const posterUrl = posterMatch ? posterMatch[1] : "";
+          if (posterUrl) player.poster(posterUrl);
+
+        } catch (err) {
+          console.error("Error loading video:", err.message);
+          return;
+        }
+      }
+
+      // --- 6. Setup VAST Ads if provided ---
+      if (vastUrl) {
+        player.ima({
+          adTagUrl: vastUrl,
+          debug: false,
+          showCountdown: true
+        });
+      }
+
+      // --- 7. Load and play video ---
+      player.src({ src: videoSrc, type: "video/mp4" });
+      player.load();
+      player.play();
     }
   </script>
 </body>
